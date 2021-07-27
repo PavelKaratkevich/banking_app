@@ -1,29 +1,28 @@
 package app
 
 import (
+	//"banking/domain"
+	//"banking/domain"
+	"banking/service"
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
+	//"fmt"
+	//"github.com/gorilla/mux"
 	"net/http"
 )
 
-type Customer struct {
-	Customer_ID string `json:"customer_id"`
-	Name string `json:"full_name" xml:"name"`
-	City string `json:"city" xml:"city"`
-	Zipcode string `json:"zip_code" xml:"zipcode"`
+type CustomerHandlers struct {
+	service service.CustomerService
 }
 
-func greet (w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world")
-}
+func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 
-func getAllCustomers (w http.ResponseWriter, r *http.Request) {
+	//customers := []domain.Customer{
+	//	{"1","Pavel", "Minsk", "220025"},
+	//	{"2", "Helen", "Lida", "123456"},
+	//}
 
-	customers := []Customer{
-		{"1","Pavel", "Minsk", "220025"},
-		{"2", "Helen", "Lida", "123456"},
-	}
+	customers, _ := ch.service.GetAllCustomer()
 
 	// формат json или xml в зависимости от запроса
 	if r.Header.Get("Content-Type") == "application/xml" {
