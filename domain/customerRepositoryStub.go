@@ -1,13 +1,12 @@
 package domain
 
-// создание адаптера
+// создание адаптера на стороне сервера
 type CustomerRepositoryStub struct {
 	customers []Customer
 }
 
 //присвоение адаптера методу, обозначенному портом
 func (s CustomerRepositoryStub) FindAll() ([]Customer, error) {
-
 	return s.customers, nil
 }
 
