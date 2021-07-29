@@ -13,11 +13,19 @@ type CustomerRepositoryDb struct {
 }
 
 // CustomerRepositoryDb имплементирует метод FindAll() и, соответственно, удовлетворяет интерфейсу порта CustomerRepository
-func (d CustomerRepositoryDb) FindAll() ([]Customer, *errs.AppErr) {
+func (d CustomerRepositoryDb) FindAll(status string) ([]Customer, *errs.AppErr) {
 
-	findAllSql := "SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers"
+	var rows *sql.Rows
+	var err error
 
-	rows, err := d.client.Query(findAllSql)
+	if status == "" {
+		findAllSql := "SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers"
+		rows, err = d.client.Query(findAllSql)
+	} else {
+		findAllSql := "SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE status = ?"
+		rows, err = d.client.Query(findAllSql, status)
+	}
+
 	if err != nil {
 		log.Println("Error while quering customer table" + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
