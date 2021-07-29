@@ -13,6 +13,6 @@ type Customer struct {
 
 // создание порта
 type CustomerRepository interface {
-	FindAll() ([]Customer, error)
+	FindAll() ([]Customer, *errs.AppErr)
 	ById(string) (*Customer, *errs.AppErr)
 }

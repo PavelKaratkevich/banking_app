@@ -1,11 +1,11 @@
 package app
 
 import (
+	"banking/errs"
 	//"banking/domain"
 	//"banking/domain"
 	"banking/service"
 	"encoding/json"
-	"encoding/xml"
 	"github.com/gorilla/mux"
 	//"fmt"
 	//"github.com/gorilla/mux"
@@ -18,14 +18,12 @@ type CustomerHandlers struct {
 }
 
 func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, _ := ch.service.GetAllCustomer()
-	// формат json или xml в зависимости от запроса
-	if r.Header.Get("Content-Type") == "application/xml" {
-		w.Header().Add("Content-Type", "application/xml")
-		xml.NewEncoder(w).Encode(customers)
+	customers, err := ch.service.GetAllCustomer()
+
+	if err != nil {
+		writeResponse(w, err.Code, errs.NewUnexpectedError("Server error"))
 	} else {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(customers)
+		writeResponse(w, http.StatusOK, customers)
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 
 // Primary port for interaction with users
 type CustomerService interface {
-	GetAllCustomer() ([]domain.Customer, error)
+	GetAllCustomer() ([]domain.Customer, *errs.AppErr)
 	GetCustomer(string) (*domain.Customer, *errs.AppErr)
 }
 
@@ -17,7 +17,7 @@ type DefaultCustomerService struct {
 }
 
 // применяю предусмотренный интерфейсом CustomerService метод к DefaultCustomerService
-func (s DefaultCustomerService) GetAllCustomer() ([]domain.Customer, error) {
+func (s DefaultCustomerService) GetAllCustomer() ([]domain.Customer, *errs.AppErr) {
 
 	// применяю метод FindAll() к CustomerRepository, тем самым получая данные от сервера (FindAll() ) и передавая их пользователю (GetAllCustomers() )
 	return s.repo.FindAll()
