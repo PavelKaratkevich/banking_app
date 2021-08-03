@@ -36,14 +36,17 @@ func Start() {
 
 	customerRepositoryDb := domain.NewCustomerRepositoryDb(dbClient)
 	accountRepositoryDb := domain.NewAccountRepositoryDb(dbClient)
+	transactionRepositoryDb := domain.NewTransactionRepositoryDb(dbClient)
 
 	ch := CustomerHandlers{service: service.NewCustomerService(customerRepositoryDb)}
 	ah := AccountHandler{service.NewAccountService(accountRepositoryDb)}
+	th := TransactionHandler{service: service.NewTransactionService(transactionRepositoryDb)}
 
 	// define routes
 	router.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customer_id:[0-9]+}", ch.getCustomer).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customer_id:[0-9]+}/account", ah.NewAccount).Methods(http.MethodPost)
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/account/{account_id:[0-9]+}", th.MakeTransaction).Methods(http.MethodPost)
 
 	//внеднение переменных окружения для изменения адреса и порта из командной строки SERVER_ADDRESS=localhost SERVER_PORT=8262 go run main.go
 	//injecting environment variables
