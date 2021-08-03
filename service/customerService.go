@@ -2,13 +2,14 @@ package service
 
 import (
 	"banking/domain"
+	"banking/dto"
 	"banking/errs"
 )
 
 // Primary port for interaction with users
 type CustomerService interface {
 	GetAllCustomer(string) ([]domain.Customer, *errs.AppErr)
-	GetCustomer(string) (*domain.Customer, *errs.AppErr)
+	GetCustomer(string) (*dto.CustomerResponse, *errs.AppErr)
 }
 
 // port implementation which has a dependency of the Repository
@@ -29,8 +30,13 @@ func (s DefaultCustomerService) GetAllCustomer(status string) ([]domain.Customer
 	return s.repo.FindAll(status)
 }
 
-func (s DefaultCustomerService) GetCustomer(id string) (*domain.Customer, *errs.AppErr) {
-	return s.repo.ById(id)
+func (s DefaultCustomerService) GetCustomer(id string) (*dto.CustomerResponse, *errs.AppErr) {
+	c, err := s.repo.ById(id)
+	if err != nil {
+		return nil, err
+	}
+	response := c.ToDto()
+	return &response, err
 }
 
 // вспомогательная функция, которая внедряет зависимость репо от DefaultCustomerService
