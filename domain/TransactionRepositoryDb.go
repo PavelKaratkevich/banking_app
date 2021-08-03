@@ -1,6 +1,7 @@
 package domain
 
 import (
+	//"banking/dto"
 	"banking/errs"
 	"banking/logger"
 	"fmt"
@@ -41,8 +42,14 @@ func (d TransactionRepositoryDb) Update(t Transaction) (*Transaction, *errs.AppE
 		logger.Error("Error while getting last inserted transaction ID from database")
 		return nil, errs.NewUnexpectedError("Unexpected error from database")
 	}
-
 	t.TransactionId = int(transactionId)
+
+	sqlBalance := "SELECT amount FROM accounts WHERE account_id = ?"
+	err = d.client.Get(&t.Amount, sqlBalance, t.AccountId)
+	if err != nil {
+		logger.Error("Error while getting updated balance from database")
+		return nil, errs.NewUnexpectedError("Unexpected error from database")
+	}
 	return &t, nil
 }
 
