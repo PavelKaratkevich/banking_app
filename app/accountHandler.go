@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 // AccountHandlers это адаптер к порту AccountService
@@ -33,4 +34,27 @@ func (h *AccountHandler) NewAccount(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+}
+
+func (h *AccountHandler) MakeTransaction(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	accountId := vars["account_id"]
+	customerId := vars["customer_id"]
+
+	var request dto.NewTransactionRequest
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		writeResponse(w, http.StatusBadRequest, err.Error())
+	} else {
+		request.AccountId, _ = strconv.Atoi(accountId)
+		request.CustomerId, _ = strconv.Atoi(customerId)
+
+		transaction, appErr := h.service.MakeTransaction(request)
+		if appErr != nil {
+			writeResponse(w, appErr.Code, appErr.Message)
+		} else {
+			writeResponse(w, http.StatusCreated, transaction)
+		}
+	}
 }

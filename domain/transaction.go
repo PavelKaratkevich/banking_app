@@ -2,15 +2,14 @@ package domain
 
 import (
 	"banking/dto"
-	"banking/errs"
 )
 
 type Transaction struct {
-	TransactionId int
-	AccountId     int
-	Amount        float64
-	Type          string
-	Date          string
+	TransactionId int     `db:"transaction_id"`
+	AccountId     int     `db:"account_id"`
+	Amount        float64 `db:"amount"`
+	Type          string  `db:"transaction_type"`
+	Date          string  `db:"transaction_date"`
 }
 
 func (a Transaction) ToNewTransactionResponseDto() dto.NewTransactionResponse {
@@ -18,9 +17,4 @@ func (a Transaction) ToNewTransactionResponseDto() dto.NewTransactionResponse {
 		a.TransactionId,
 		a.Amount,
 	}
-}
-
-// TransactionRepository is a secondary port connecting Transaction with a Data Base
-type TransactionRepository interface {
-	Update(Transaction) (*Transaction, *errs.AppErr)
 }
